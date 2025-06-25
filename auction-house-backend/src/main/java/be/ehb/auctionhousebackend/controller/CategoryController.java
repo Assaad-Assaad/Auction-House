@@ -2,8 +2,10 @@ package be.ehb.auctionhousebackend.controller;
 
 
 
+import be.ehb.auctionhousebackend.dto.CategoryDto;
+import be.ehb.auctionhousebackend.model.Auction;
 import be.ehb.auctionhousebackend.model.Category;
-import be.ehb.auctionhousebackend.repository.CategoryRepository;
+import be.ehb.auctionhousebackend.service.CategoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +22,29 @@ import java.util.List;
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
 
     @GetMapping
     List<Category> findAll() {
-        return categoryRepository.findAll();
+        return categoryService.findAll();
     }
 
     @PostMapping
-    ResponseEntity<Category> save(@Valid @RequestBody Category category) {
-        categoryRepository.save(category);
-        return ResponseEntity.ok(category);
+    ResponseEntity<CategoryDto> save(@Valid @RequestBody CategoryDto categoryDto) {
+        categoryService.save(categoryDto);
+        return ResponseEntity.ok(categoryDto);
+    }
+
+    @GetMapping("/{id}/auctions")
+    ResponseEntity<List<Auction>> findAuctions(@PathVariable int id) {
+       List<Auction> auctions = categoryService.getAllAuctionsAssignedToCategory(id);
+        return ResponseEntity.ok(auctions);
     }
 
 }

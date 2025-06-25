@@ -1,7 +1,7 @@
 import "../css/Home.css";
 import CategoryCard from "../components/CategoryCard";
 import { useState, useEffect } from "react";
-import { getAllCategories } from "../services/Api";
+import { getAllCategories } from "../services/api.js";
 
 function Home() {
   const [searchQuery, setSearchQuery] = useState("");

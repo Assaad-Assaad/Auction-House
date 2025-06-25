@@ -2,6 +2,8 @@ package be.ehb.auctionhousebackend.service;
 
 
 import be.ehb.auctionhousebackend.dto.CategoryDto;
+import be.ehb.auctionhousebackend.exception.ResourceException;
+import be.ehb.auctionhousebackend.model.Auction;
 import be.ehb.auctionhousebackend.model.Category;
 import be.ehb.auctionhousebackend.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +32,17 @@ public class CategoryService {
         category.setImage(categoryDto.getImage());
 
         return categoryRepository.save(category);
+    }
+
+    public List<Auction> getAllAuctionsAssignedToCategory(int categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceException("Category not found."));
+
+        List<Auction> auctions = category.getAuctions();
+
+        if (auctions.isEmpty()) {
+            throw new ResourceException("There is no auctions in the category.");
+        }
+        return auctions;
     }
 }

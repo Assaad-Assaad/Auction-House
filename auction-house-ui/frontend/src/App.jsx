@@ -1,5 +1,8 @@
 import "./css/App.css";
 import Home from "./pages/Home";
+import Auctions from "./pages/Auctions";
+import AuctionDetails from "./pages/AuctionDetails"
+import CategoryAuctions from "./pages/CategoryAuctions"
 
 
 
@@ -16,8 +19,9 @@ function App() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
-          
-          
+          <Route path="/auctions" element={<Auctions />}/>
+          <Route path="/auctions/category/:id" element={<CategoryAuctions />} />
+          <Route path="/auctions/:id" element={<AuctionDetails />} />
           
 
         </Routes>

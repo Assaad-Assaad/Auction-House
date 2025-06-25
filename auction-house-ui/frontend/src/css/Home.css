@@ -1,6 +1,5 @@
 .home {
-  padding: 2.5rem 1rem;
-  width: 100%;
+  padding: 3rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
   box-sizing: border-box;
@@ -13,41 +12,47 @@
   gap: 1rem;
   padding: 0 1rem;
   box-sizing: border-box;
+  flex-wrap: wrap;
 }
 
 .search-input {
   flex: 1;
-  padding: 0.85rem 1.25rem;
+  padding: 0.9rem 1.25rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: #2a2a2a;
   color: white;
   font-size: 1rem;
+  outline: none;
+  transition: box-shadow 0.3s ease;
 }
 
 .search-input:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #e50914;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.4);
 }
 
 .search-button {
-  padding: 0.85rem 1.5rem;
-  background-color: #e50914;
+  padding: 0.9rem 1.6rem;
+  background: linear-gradient(135deg, #e50914, #ff1c1c);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 600;
-  transition: background-color 0.3s;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
 }
 
 .search-button:hover {
-  background-color: #f40612;
+  background: linear-gradient(135deg, #f40612, #ff3b3b);
+  box-shadow: 0 6px 16px rgba(229, 9, 20, 0.5);
+  transform: translateY(-1px);
 }
 
 .category-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+  gap: 2.5rem;
   padding: 0 1rem;
   width: 100%;
   box-sizing: border-box;
@@ -55,7 +60,7 @@
 
 @media (max-width: 639px) {
   .home {
-    padding: 1.5rem 0;
+    padding: 2rem 0;
   }
 
   .search-form {
