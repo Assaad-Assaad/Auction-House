@@ -12,11 +12,11 @@ function Home() {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const categories = await getAllCategories();
-        setCategories(categories);
+        const data = await getAllCategories();
+        setCategories(data);
       } catch (err) {
-        console.log(err);
-        setError("Fail to load categories");
+        setError("Failed to load categories");
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -25,36 +25,45 @@ function Home() {
     loadCategories();
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setSearchQuery("");
-  };
+  const filteredCategories = categories.filter((category) =>
+    category.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="home">
-      <form onSubmit={handleSearch} className="search-form">
-        <input
-          type="text"
-          placeholder="Search for category..."
-          className="search-input"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button type="submit" className="search-button">
-          Search
-        </button>
-      </form>
-
-      <div className="category-grid">
-        {categories.map((category) => {
-          const simpleCategory = {
-            id: category.id,
-            name: category.name,
-            image: category.image,
-          };
-          return <CategoryCard category={simpleCategory} key={category.id} />;
-        })}
+      <div className="home-banner">
+        <h1>Welcome to Auction House</h1>
+        <p>Find exclusive items and bid now!</p>
+        {/* Search Bar */}
+        <form className="search-form">
+          <input
+            type="text"
+            placeholder="Search for category..."
+            className="search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </form>
       </div>
+
+      {/* Display filtered categories */}
+      {searchQuery && filteredCategories.length === 0 ? (
+        <p>No categories match your search.</p>
+      ) : (
+        <div className="category-grid">
+          {filteredCategories.map((category) => {
+            const simpleCategory = {
+              id: category.id,
+              name: category.name,
+              image: category.image,
+            };
+            return <CategoryCard category={simpleCategory} key={category.id} />;
+          })}
+        </div>
+      )}
     </div>
   );
 }

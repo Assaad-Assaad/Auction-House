@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import "../css/AuctionDetails.css";
-import { getAuctionById, placeBid } from "../services/api.js";
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import '../css/AuctionDetails.css';
+import { getAuctionById, placeBid } from '../services/api.js';
 import BidCard from '../components/BidCard.jsx';
 
 
@@ -29,14 +29,14 @@ function AuctionDetails() {
     try {
       await placeBid(parseInt(id), amount);
       alert('Bid placed successfully!');
-      // Optionally refresh auction data here
+      
     } catch (err) {
       setError(err.message || 'Failed to place bid');
     }
   };
 
   const isAuthenticated = () => {
-    return !!localStorage.getItem('token'); // adjust based on your auth method
+    return !!localStorage.getItem('token'); 
   };
 
   if (loading) return <p>Loading...</p>;
@@ -45,7 +45,7 @@ function AuctionDetails() {
 
 return (
   <div className="auction-details-container">
-    {/* Left Side */}
+    
     <div className="auction-left">
       {auction.image ? (
         <img src={auction.image} alt={auction.productName || "Product"} className="main-auction-img" />
@@ -57,7 +57,7 @@ return (
       <p className="product-description">{auction.description || "No description available."}</p>
     </div>
 
-    {/* Right Side */}
+    
     <div className="auction-right">
       <BidCard
         auction={auction}

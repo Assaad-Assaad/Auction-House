@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import "../css/CategoryCard.css";
+import { Link } from 'react-router-dom';
+import '../css/CategoryCard.css';
 
 function CategoryCard({ category }) {
   return (

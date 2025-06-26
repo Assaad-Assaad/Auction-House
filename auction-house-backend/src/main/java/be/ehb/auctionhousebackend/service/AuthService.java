@@ -45,7 +45,11 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceException("Error: Role is not found."));
         user.setRole(userRole);
         personRepository.save(user);
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().getName().name());
+        String token = jwtUtil.generateToken(
+                user.getEmail(),
+                user.getRole().getName().name(),
+                user.getName()
+        );
         return new AuthResponse(token);
     }
 
@@ -56,7 +60,12 @@ public class AuthService {
             throw new ResourceException("Invalid password");
         }
 
-        return jwtUtil.generateToken(user.getEmail(), user.getRole().getName().name());
+        String token = jwtUtil.generateToken(
+                user.getEmail(),
+                user.getRole().getName().name(),
+                user.getName()  // 👈 Pass name to JWT
+        );
+        return token;
     }
 
 

@@ -1,5 +1,5 @@
-import "../css/AuctionCard.css";
-import { Link } from "react-router-dom";
+import '../css/AuctionCard.css';
+import { Link } from 'react-router-dom';
 
 function AuctionCard({ auction }) {
   return (

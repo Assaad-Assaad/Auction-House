@@ -1,33 +1,30 @@
-import "./css/App.css";
-import Home from "./pages/Home";
-import Auctions from "./pages/Auctions";
-import AuctionDetails from "./pages/AuctionDetails"
-import CategoryAuctions from "./pages/CategoryAuctions"
+// App.jsx
+import Navbar from './components/Navbar';
+import { Routes, Route } from 'react-router-dom';
 
-
-
-import {Routes, Route} from "react-router-dom"
-import Navbar from "./components/Navbar";
-//import React from "react";
-//import Navbar from "./components/Navbar";
-
+import Home from './pages/Home';
+import Auctions from './pages/Auctions';
+import CategoryAuctions from './pages/CategoryAuctions'
+import AuctionDetails from './pages/AuctionDetails';
+import ProfilePage from './pages/ProfilePage';
+import AdminAuctions from './pages/admin/AdminAuctions';
 
 function App() {
   return (
-    <div>
+    <>
       <Navbar />
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/auctions" element={<Auctions />}/>
-          <Route path="/auctions/category/:id" element={<CategoryAuctions />} />
+          <Route path="/auctions" element={<Auctions />} />
           <Route path="/auctions/:id" element={<AuctionDetails />} />
-          
-
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/admin/auctions" element={<AdminAuctions />} />
+          <Route path="/auctions/category/:id" element={<CategoryAuctions />} />
         </Routes>
       </main>
-    </div>
+    </>
   );
 }
 
-export default App
+export default App;
