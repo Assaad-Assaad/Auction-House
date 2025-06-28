@@ -2,6 +2,7 @@ package be.ehb.auctionhousebackend.controller;
 
 
 import be.ehb.auctionhousebackend.dto.AuctionDto;
+import be.ehb.auctionhousebackend.dto.BidRequest;
 import be.ehb.auctionhousebackend.model.Auction;
 import be.ehb.auctionhousebackend.model.AuctionBid;
 import be.ehb.auctionhousebackend.service.AuctionService;
@@ -39,13 +40,23 @@ public class AuctionController {
 
     @PostMapping
     ResponseEntity<Auction> createAuction(@Valid @RequestBody AuctionDto auctionDto) {
-        return ResponseEntity.ok(auctionService.createAuction(auctionDto));
+        return ResponseEntity.ok(auctionService.save(auctionDto));
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Auction> getAuction(@PathVariable int id) {
+    ResponseEntity<Auction> getAuction(@PathVariable("id") int id) {
         return ResponseEntity.ok(auctionService.findById(id));
     }
+    @PutMapping("/{id}")
+    ResponseEntity<Auction> updateAuction(@PathVariable("id") int id, @RequestBody AuctionDto auctionDto) {
+        return ResponseEntity.ok(auctionService.save(auctionDto));
+    }
+
+    @DeleteMapping("/id")
+    void deleteAuction(@PathVariable("id") int id) {
+        auctionService.deleteById(id);
+    }
+
 
     @GetMapping("{id}/bids")
     List<AuctionBid> findAllByAuctionId(@PathVariable("id") int auctionId) {
@@ -53,7 +64,9 @@ public class AuctionController {
     }
 
     @PostMapping("/{id}/bids")
-    ResponseEntity<Void> bidOnAuction(@PathVariable("id") int auctionId, @Valid @RequestBody AuctionBid auctionBid) {
+    ResponseEntity<Void> bidOnAuction(@PathVariable("id") int auctionId, @Valid @RequestBody BidRequest bidRequest) {
+        AuctionBid auctionBid = new AuctionBid();
+        auctionBid.setPrice(bidRequest.price());
         auctionService.bidOnAuction(auctionId, auctionBid);
         return ResponseEntity.ok().build();
     }

@@ -2,6 +2,7 @@
 import Navbar from './components/Navbar';
 import { Routes, Route } from 'react-router-dom';
 
+
 import Home from './pages/Home';
 import Auctions from './pages/Auctions';
 import CategoryAuctions from './pages/CategoryAuctions'
@@ -23,6 +24,8 @@ function App() {
           <Route path="/auctions/category/:id" element={<CategoryAuctions />} />
         </Routes>
       </main>
+
+      
     </>
   );
 }

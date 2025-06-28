@@ -64,20 +64,16 @@ public class AuctionService {
 
 
     @CacheEvict(value = "auctions", allEntries = true)
-    public Auction createAuction(AuctionDto auctionDto) {
-        Category category = categoryRepository.findById(auctionDto.getCategoryId())
-                .orElseThrow(() -> new ResourceException("Category with id: " + auctionDto.getCategoryId() + " not found"));
+    public Auction save(AuctionDto auctionDto) {
+        Category category = getCurrentCategory(auctionDto);
         LocalDateTime now = LocalDateTime.now();
         if (auctionDto.getEndTime().isBefore(now)) {
             throw new AuctionClosedException("The auction end time must be in the future");
         }
-
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Person seller = personRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceException("User not found"));
+        Person seller = getCurrentUser();
 
         Auction auction = new Auction();
-        auction.setProductName(auctionDto.getProductName()); 
+        auction.setProductName(auctionDto.getProductName());
         auction.setStartPrice(auctionDto.getStartPrice());
         auction.setPerson(seller);
         auction.setEndTime(auctionDto.getEndTime());
@@ -86,6 +82,32 @@ public class AuctionService {
         auction.setCategory(category);
 
         return auctionRepository.save(auction);
+    }
+
+    public Auction update(int id, AuctionDto auctionDto) {
+        Auction existingAuction = findById(id);
+        Category category = getCurrentCategory(auctionDto);
+        LocalDateTime now = LocalDateTime.now();
+        if (auctionDto.getEndTime().isBefore(now)) {
+            throw new AuctionClosedException("The auction end time must be in the future");
+        }
+
+
+        Person seller = getCurrentUser();
+
+        existingAuction.setProductName(auctionDto.getProductName());
+        existingAuction.setStartPrice(auctionDto.getStartPrice());
+        existingAuction.setPerson(seller);
+        existingAuction.setEndTime(auctionDto.getEndTime());
+        existingAuction.setImage(auctionDto.getImageUrl());
+        existingAuction.setDescription(auctionDto.getDescription());
+        existingAuction.setCategory(category);
+        return auctionRepository.save(existingAuction);
+
+    }
+
+    public void deleteById(int id) {
+        auctionRepository.deleteById(id);
     }
 
     @CacheEvict(value = "auctions", allEntries = true)
@@ -168,6 +190,17 @@ public class AuctionService {
     private boolean isNewBidHigherThanAllBids(List<AuctionBid> auctionBids, AuctionBid auctionBid) {
         double highestBid = auctionBids.stream().map(AuctionBid::getPrice).max(Double::compareTo).get();
         return auctionBid.getPrice() > highestBid;
+    }
+
+    private Person getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return personRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceException("User not found"));
+    }
+
+    private Category getCurrentCategory(AuctionDto auctionDto) {
+        return categoryRepository.findById(auctionDto.getCategoryId())
+                .orElseThrow(() -> new ResourceException("Category with id: " + auctionDto.getCategoryId() + " not found"));
     }
 
 }

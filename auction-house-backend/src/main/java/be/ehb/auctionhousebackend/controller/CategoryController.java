@@ -35,14 +35,30 @@ public class CategoryController {
         return categoryService.findAll();
     }
 
+    @GetMapping("/{id}")
+    Category findById(@PathVariable("id") int id) {
+        return categoryService.findById(id);
+    }
+
+    @DeleteMapping
+    void deleteById(@PathVariable("id") int id) {
+        categoryService.delete(id);
+    }
+
     @PostMapping
-    ResponseEntity<CategoryDto> save(@Valid @RequestBody CategoryDto categoryDto) {
+    ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         categoryService.save(categoryDto);
         return ResponseEntity.ok(categoryDto);
     }
 
+    @PutMapping("/{id}")
+    ResponseEntity<CategoryDto> updateCategory(@PathVariable("id") int id, @Valid @RequestBody CategoryDto categoryDto) {
+        categoryService.update(id, categoryDto);
+        return ResponseEntity.ok(categoryDto);
+    }
+
     @GetMapping("/{id}/auctions")
-    ResponseEntity<List<Auction>> findAuctions(@PathVariable int id) {
+    ResponseEntity<List<Auction>> findAuctions(@PathVariable("id") int id) {
        List<Auction> auctions = categoryService.getAllAuctionsAssignedToCategory(id);
         return ResponseEntity.ok(auctions);
     }

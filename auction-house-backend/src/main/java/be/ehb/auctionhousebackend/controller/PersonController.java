@@ -42,7 +42,7 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Person> findById(@PathVariable String id) {
+    ResponseEntity<Person> findById(@PathVariable("id") String id) {
         return ResponseEntity.ok(personService.findById(id));
     }
 }

@@ -15,6 +15,19 @@ export const getAllCategories = async () => {
     }
 };
 
+export const getCategoryById = async (categoryId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/categories/${categoryId}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to load category");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Fetch error:", error.message);
+  }
+};
+
 
 export const getAuctionsAssignedToCategory = async (id) => {
     try {
@@ -61,23 +74,80 @@ export const getAuctionById = async (id) => {
     }
 };
 
-// Bid on an auction
-export const placeBid = async (auctionId, bidData) => {
-  const response = await fetch(`${BASE_URL}/auctions/${auctionId}/bids`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`, 
-    },
-    body: JSON.stringify(bidData),
-  });
+export const getAuctionWithBidInfo = async (auctionId) => {
+  const auctionResponse = await fetch(`${BASE_URL}/auctions/${auctionId}`);
+  if (!auctionResponse.ok) throw new Error("Failed to load auction");
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to place bid');
+  const auction = await auctionResponse.json();
+
+  const bidsResponse = await fetch(`${BASE_URL}/auctions/${auctionId}/bids`);
+  if (!bidsResponse.ok) throw new Error("Failed to load bids");
+
+  const bids = await bidsResponse.json();
+
+  // Calculate current bid and number of bidders
+  const currentBid = bids.length > 0
+    ? Math.max(...bids.map(bid => bid.price))
+    : auction.startPrice;
+
+  const bidders = [...new Set(bids.map(bid => bid.bidderId))].length;
+
+  return {
+    ...auction,
+    currentBid,
+    bidders,
+  };
+};
+
+// Bid on an auction
+export const placeBid = async (auctionId, bidAmount) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Authentication required');
   }
 
-  return await response.json();
+  try {
+    const response = await fetch(`${BASE_URL}/auctions/${auctionId}/bids`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ price: bidAmount }),
+    });
+
+    if (!response.ok) {
+      let errorMessage = 'Failed to place bid';
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch (e) {
+        // If response isn't JSON, use status text
+        errorMessage = response.statusText || errorMessage;
+      }
+      throw new Error(errorMessage);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Bid placement error:', error);
+    throw error;
+  }
+};
+
+export const GetAllBidsForAuction = async (auctionId) => {
+   try {
+        const response = await fetch(`${BASE_URL}/auctions/${auctionId}/bids`);
+        if (!response.ok) {
+            
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Request failed");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Fetch error:", error.message);
+        throw error; 
+    }
 };
 
 

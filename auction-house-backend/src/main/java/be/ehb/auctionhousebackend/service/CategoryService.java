@@ -26,12 +26,28 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    public Category findById(int id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceException("Category not found"));
+    }
+
     public Category save(CategoryDto categoryDto) {
         Category category = new Category();
         category.setName(categoryDto.getName());
         category.setImage(categoryDto.getImage());
 
         return categoryRepository.save(category);
+    }
+
+    public void delete(int id) {
+        categoryRepository.deleteById(id);
+    }
+
+    public Category update(int id, CategoryDto categoryDto) {
+        Category existingCategory = findById(id);
+        existingCategory.setName(categoryDto.getName());
+        existingCategory.setImage(categoryDto.getImage());
+        return categoryRepository.save(existingCategory);
     }
 
     public List<Auction> getAllAuctionsAssignedToCategory(int categoryId) {
